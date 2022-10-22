@@ -124,6 +124,11 @@ class List{
                 linkedListIterator = linkedListIterator->nextLinkedList;
             }
             if(linkedListIterator != nullptr){
+                if (linkedListIterator->nextLinkedList == nullptr)
+                {
+                    delete linkedListIterator;
+                    return nullptr;
+                }
                 linkedListIterator->nextLinkedList = linkedListIterator->nextLinkedList->nextLinkedList;
                 linkedListIterator = linkedListIterator->nextLinkedList;
                 delete linkedListIterator;
@@ -134,7 +139,39 @@ class List{
         else{
             return nullptr;
         }
+
    }
+    long GetItem(long MNumber){
+    LinkedList<aTemplate> *linkedListIterator = firstLinkedList;
+
+    if(linkedListIterator->item->GetMNumber() == MNumber){
+        firstLinkedList = firstLinkedList->nextLinkedList;
+        delete linkedListIterator;
+        return MNumber;
+    }
+    if(linkedListIterator != nullptr){
+
+        while(linkedListIterator->nextLinkedList != nullptr && linkedListIterator->nextLinkedList->item->GetMNumber() != MNumber){
+            linkedListIterator = linkedListIterator->nextLinkedList;
+        }
+        if(linkedListIterator != nullptr){
+            if (linkedListIterator->nextLinkedList == nullptr)
+            {
+                delete linkedListIterator;
+                return 0;
+            }
+            linkedListIterator->nextLinkedList = linkedListIterator->nextLinkedList->nextLinkedList;
+            linkedListIterator = linkedListIterator->nextLinkedList;
+            delete linkedListIterator;
+            return MNumber;
+        }
+        return 0;
+        }
+    else
+    {
+        return 0;
+    }
+    }
 
    bool IsInList(aTemplate* item){
        LinkedList<aTemplate>* temp = firstLinkedList;
@@ -233,21 +270,28 @@ class Student{
     private:
         string FirstName;
         string LastName;
-        string MNumber;
+        long MNumber;
         float GPA;
         string BirthDate;
     public:
-        Student(string FirstName, string LastName, string MNumber, string BirthDate, float GPA = 0.0){
+        Student(string FirstName, string LastName, long MNumber, string BirthDate, float GPA = 0.0){
             this->FirstName = FirstName;
             this->LastName = LastName;
             this->MNumber = MNumber;
             this->GPA = GPA;
             this->BirthDate = BirthDate;
         }
+        Student(string FirstName, string LastName, string MNumber, string BirthDate, float GPA = 0.0){
+            this->FirstName = FirstName;
+            this->LastName = LastName;
+            this->MNumber = stoi(MNumber);
+            this->GPA = GPA;
+            this->BirthDate = BirthDate;
+        }
         string GetName(){
             return FirstName + " " + LastName;
         }
-        string GetMNumber(){
+        long GetMNumber(){
             return MNumber;
         }
         int GetAge(){
@@ -265,8 +309,8 @@ class Student{
         bool operator> (Student AStudent){
             int A;
             int B;
-            A = stoi(this->GetMNumber().substr(1, this->GetMNumber().length()-1));
-            B = stoi(AStudent.GetMNumber().substr(1, AStudent.GetMNumber().length()-1));
+            A = this->GetMNumber();
+            B = AStudent.GetMNumber();
                 if(A > B){
                     return true;
                 }
@@ -277,8 +321,8 @@ class Student{
          bool operator< (Student AStudent){
             int A;
             int B;
-            A = stoi(this->GetMNumber().substr(1, this->GetMNumber().length()-1));
-            B = stoi(AStudent.GetMNumber().substr(1, AStudent.GetMNumber().length()-1));
+            A = this->GetMNumber();
+            B = AStudent.GetMNumber();
                 if(A < B){
                     return true;
                 }
@@ -289,8 +333,8 @@ class Student{
          bool operator== (Student AStudent){
             int A;
             int B;
-            A = stoi(this->GetMNumber().substr(1, this->GetMNumber().length()-1));
-            B = stoi(AStudent.GetMNumber().substr(1, AStudent.GetMNumber().length()-1));
+            A = this->GetMNumber();
+            B = AStudent.GetMNumber();
                 if(A == B){
                     return true;
                 }
@@ -302,7 +346,7 @@ class Student{
          {
 
              cout << "Name: " << this->GetName()
-                  << '\t' << "MNumber: " << this->MNumber
+                  << '\t' << "MNumber: M" << this->MNumber
                   << '\t' << "Birth Date: " << this->BirthDate
                   << '\t' << endl;
          }
@@ -310,7 +354,7 @@ class Student{
          friend ostream &operator<<( ostream &output, const Student &student )
          {
              output  << "Name: " << student.FirstName << " " << student.LastName
-                    << '\t' << "MNumber: " << student.MNumber
+                    << '\t' << "MNumber: M" << student.MNumber
                     << '\t' << "Birth Date: " << student.BirthDate
                     << '\t' << endl;
              return output;
@@ -320,7 +364,7 @@ class Student{
          ostream& operator<<(ostream &output)
          {
              output  << "Name: " << this->GetName()
-                     << '\t' << "MNumber: " << this->MNumber
+                     << '\t' << "MNumber: M" << this->MNumber
                      << '\t' << "Birth Date: " << this->BirthDate
                      << '\t' << endl;
              return output;
@@ -362,7 +406,7 @@ void UserMenu(){
             string first;
             string last;
             // Birthday Inputed seperately
-            string mNum;
+            long mNum;
             string dateHolderMonth, dateHolderDay, dateHolderYear;
 
             // Prompts user for Student information
@@ -372,6 +416,12 @@ void UserMenu(){
             cin >> last;
             cout << "Enter M#: ";
             cin >> mNum;
+            while (to_string(mNum).length() != 8)
+            {
+                cout << "Invalid M# length! Please enter an 8 digit M#!" << '\n';
+                cout << "Enter M#: ";
+                cin >> mNum;
+            }
             cout << "Enter Birthday:";
             string bDay = "lol";
             while (true)
@@ -412,15 +462,14 @@ void UserMenu(){
 
         }
         else if(input == "d"){
-            string mNum;
+            long mNum;
             if(sList.Size() == 0){
                 cout << "List is empty, cannot delete Students.\n" << endl;
                 continue;
             }
             cout << "Enter the M# of the student to be deleted: ";
             cin >> mNum;
-            Student temp = Student("F", "L", mNum, "00000000");
-            if(sList.GetItem(&temp) == nullptr){
+            if(sList.GetItem(mNum) != mNum){
                 cout << "Student not found. Nothing modified.\n" << endl;
             }
             else{
@@ -428,7 +477,7 @@ void UserMenu(){
             }
         }
         else if(input == "c"){
-            string mNum;
+            long mNum;
             cout << "Enter the M# of the student to check: ";
             cin >> mNum;
             Student temp = Student("F", "L", mNum, "00000000");
@@ -491,28 +540,28 @@ void TestStudent(){
     string first1 = "Takeshi";
     string last1 = "Tanaka";
     string bDay1 = "10/18/1998";
-    string mNum1 = "#12345678";
+    long mNum1 = 12345678;
     double GPA1 = 3.98;
 
     // Test Student 2
     string first2 = "John";
     string last2 = "Smith";
     string bDay2 = "10/18/1996";
-    string mNum2 = "#98765432";
+    long mNum2 = 98765432;
     double GPA2 = 3.72;
 
     //Test Student 3
     string first3 = "Kyle";
     string last3 = "Hall";
     string bday3 = "10/18/2003";
-    string mNum3 = "#66792176";
+    long mNum3 = 66792176;
     double GPA3 = 2.74;
 
     //Test Student 4
     string first4 = "Adam";
     string last4 = "Hurst";
     string bday4 = "10/18/2006";
-    string mNum4 = "#59834670";
+    long mNum4 = 59834670;
     double GPA4 = 4.10;
 
     Student Takeshi = Student(first1, last1, mNum1, bDay1, GPA1);

@@ -29,7 +29,7 @@ public:
         aTemplate* item;
 
         LinkedList(){
-            this->item = nullptr;
+            this->item = nullptr; //empty list
             this->nextLinkedList = nullptr;
         }
 
@@ -490,21 +490,39 @@ void TestStudent(){
     // Test Student 1
     string first1 = "Takeshi";
     string last1 = "Tanaka";
-    string bDay1 = "18/10/1998";
-    string mNum1 = "#123456789";
+    string bDay1 = "10/18/1998";
+    string mNum1 = "#12345678";
     double GPA1 = 3.98;
 
     // Test Student 2
     string first2 = "John";
     string last2 = "Smith";
-    string bDay2 = "18/10/1996";
-    string mNum2 = "#987654321";
+    string bDay2 = "10/18/1996";
+    string mNum2 = "#98765432";
     double GPA2 = 3.72;
+
+    //Test Student 3
+    string first3 = "Kyle";
+    string last3 = "Hall";
+    string bday3 = "10/18/2003";
+    string mNum3 = "#66792176";
+    double GPA3 = 2.74;
+
+    //Test Student 4
+    string first4 = "Adam";
+    string last4 = "Hurst";
+    string bday4 = "10/18/2006";
+    string mNum4 = "#59834670";
+    double GPA4 = 4.10;
 
     Student Takeshi = Student(first1, last1, mNum1, bDay1, GPA1);
     Student John = Student(first2, last2, mNum2, bDay2, GPA2);
+    Student Kyle = Student(first3, last3, mNum3, bday3, GPA3);
+    Student Adam = Student(first4, last4, mNum4, bday4, GPA4);
     cout << "Name: " << Takeshi.GetName() << "\nAge: " << Takeshi.GetAge() << "\nM#: " << Takeshi.GetMNumber() << endl << endl;
     cout << "Name: " << John.GetName() << "\nAge: " << John.GetAge() << "\nM#: " << John.GetMNumber() << endl << endl;
+    cout << "Name: " << Kyle.GetName() << "\nAge: " << Kyle.GetAge() << "\nM#: " << Kyle.GetMNumber() << endl << endl;
+    cout << "Name: " << Adam.GetName() << "\nAge: " << Adam.GetAge() << "\nM#: " << Adam.GetMNumber() << endl << endl;
 
     cout << "M# Are equal: " << (Takeshi==John) << endl;
     cout << "John has larger M#: " << (Takeshi<John) << endl;
